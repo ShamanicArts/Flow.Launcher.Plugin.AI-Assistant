@@ -1,4 +1,4 @@
-# Flow.Launcher.Plugin.OpenRouter
+# Flow.Launcher.Plugin.ai
 
 A Flow Launcher plugin that allows you to query OpenRouter AI models directly from Flow Launcher.
 
@@ -15,40 +15,40 @@ A Flow Launcher plugin that allows you to query OpenRouter AI models directly fr
 ### From Flow Launcher
 
 1. Open Flow Launcher
-2. Type `pm install OpenRouter AI`
+2. Type `pm install AI Assistant`
 3. Press Enter to install the plugin
 
 ### Manual Installation
 
-1. Download the latest release from the [Releases page](https://github.com/yourusername/Flow.Launcher.Plugin.OpenRouter/releases)
+1. Download the latest release from the [Releases page](https://github.com/yourusername/Flow.Launcher.Plugin.ai/releases)
 2. Extract the zip file to `%APPDATA%\FlowLauncher\Plugins`
 3. Restart Flow Launcher
 
 ## Usage
 
-The default action keyword is `ortr`. Here's how to use the plugin:
+The default action keyword is `ai`. Here's how to use the plugin:
 
 ### Setting up
 
 1. Get your API key from [OpenRouter](https://openrouter.ai/keys)
 2. Set your API key with:
    ```
-   ortr setkey YOUR_API_KEY
+   ai setkey YOUR_API_KEY
    ```
 
 ### Commands
 
-- `ortr` - Show welcome screen with available commands
-- `ortr setkey YOUR_API_KEY` - Set your OpenRouter API key
-- `ortr models` - List available models
-- `ortr setmodel MODEL_ID` - Set your preferred model (e.g., `ortr setmodel openai/gpt-4o`)
-- `ortr your question here` - Ask a question to the AI
+- `ai` - Show welcome screen with available commands
+- `ai setkey YOUR_API_KEY` - Set your OpenRouter API key
+- `ai models` - List available models
+- `ai setmodel MODEL_ID` - Set your preferred model (e.g., `ai setmodel openai/gpt-4o`)
+- `ai your question here` - Ask a question to the AI
 
 ### Example Usage
 
-- `ortr What is the capital of France?`
-- `ortr Explain quantum computing in simple terms`
-- `ortr How do I create a Flow Launcher plugin?`
+- `ai What is the capital of France?`
+- `ai Explain quantum computing in simple terms`
+- `ai How do I create a Flow Launcher plugin?`
 
 ## Development
 
@@ -61,7 +61,7 @@ The default action keyword is `ortr`. Here's how to use the plugin:
 ### Setup for Development
 
 1. Clone the repository
-2. Install the required packages: `pip install -r requirements.txt`
+2. Install the required packages: `pip install -r requirements.txt -t ./lib`
 3. Copy the project to Flow Launcher plugins directory or create a symbolic link
 
 ### Building

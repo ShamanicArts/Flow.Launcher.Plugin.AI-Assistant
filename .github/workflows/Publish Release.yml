@@ -13,6 +13,8 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
       
@@ -32,13 +34,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r ./requirements.txt -t ./lib
-          zip -r Flow.Launcher.Plugin.OpenRouter.zip . -x '*.git*'
+          zip -r Flow.Launcher.Plugin.ai.zip . -x '*.git*'
           
       - name: Publish
         if: success()
         uses: softprops/action-gh-release@v1
         with:
-          files: 'Flow.Launcher.Plugin.OpenRouter.zip'
+          files: 'Flow.Launcher.Plugin.ai.zip'
           tag_name: "v${{steps.version.outputs.prop}}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,18 +1,18 @@
 import sys
+import os
 from pathlib import Path
-
-plugindir = Path.absolute(Path(__file__).parent)
-paths = (".", "lib", "plugin")
-sys.path = [str(plugindir / p) for p in paths] + sys.path
 
 # Add lib directory to path for external modules
 plugindir = Path.absolute(Path(__file__).parent)
 paths = (".", "lib", "plugin")
 sys.path = [str(plugindir / p) for p in paths] + sys.path
 
+import json
+import webbrowser
+import requests
 from flowlauncher import FlowLauncher
 
-class OpenRouterPlugin(FlowLauncher):
+class AIPlugin(FlowLauncher):
     def __init__(self):
         super().__init__()
         self.api_key = self._load_api_key()
@@ -74,13 +74,13 @@ class OpenRouterPlugin(FlowLauncher):
                 return [{
                     "Title": "API Key saved successfully",
                     "SubTitle": "Your OpenRouter API key has been saved",
-                    "IcoPath": "Images/app.png"
+                    "IcoPath": "Images\\app.png"
                 }]
             else:
                 return [{
                     "Title": "Failed to save API key",
                     "SubTitle": "There was an error saving your API key",
-                    "IcoPath": "Images/app.png"
+                    "IcoPath": "Images\\app.png"
                 }]
         
         if query.startswith("setmodel "):
@@ -90,13 +90,13 @@ class OpenRouterPlugin(FlowLauncher):
                 return [{
                     "Title": f"Model set to {model}",
                     "SubTitle": "This model will be used for your queries",
-                    "IcoPath": "Images/app.png"
+                    "IcoPath": "Images\\app.png"
                 }]
             else:
                 return [{
                     "Title": "Invalid model",
                     "SubTitle": "The specified model is not available",
-                    "IcoPath": "Images/app.png"
+                    "IcoPath": "Images\\app.png"
                 }]
         
         if query.startswith("models"):
@@ -106,14 +106,14 @@ class OpenRouterPlugin(FlowLauncher):
         if not self.api_key:
             return [{
                 "Title": "API Key not set",
-                "SubTitle": "Use 'ortr setkey YOUR_API_KEY' to set your OpenRouter API key",
-                "IcoPath": "Images/app.png"
+                "SubTitle": "Use 'ai setkey YOUR_API_KEY' to set your OpenRouter API key",
+                "IcoPath": "Images\\app.png"
             }]
         
         return [{
             "Title": f"Ask: {query}",
             "SubTitle": f"Press Enter to ask using {self.default_model}",
-            "IcoPath": "Images/app.png",
+            "IcoPath": "Images\\app.png",
             "JsonRPCAction": {
                 "method": "ask_openrouter",
                 "parameters": [query]
@@ -124,29 +124,29 @@ class OpenRouterPlugin(FlowLauncher):
         """Return welcome results when no query is provided."""
         results = [
             {
-                "Title": "OpenRouter AI",
+                "Title": "AI Assistant",
                 "SubTitle": "Type a question to ask the AI",
-                "IcoPath": "Images/app.png"
+                "IcoPath": "Images\\app.png"
             }
         ]
         
         if not self.api_key:
             results.append({
                 "Title": "Set API Key",
-                "SubTitle": "Use 'ortr setkey YOUR_API_KEY' to set your OpenRouter API key",
-                "IcoPath": "Images/app.png"
+                "SubTitle": "Use 'ai setkey YOUR_API_KEY' to set your OpenRouter API key",
+                "IcoPath": "Images\\app.png"
             })
         
         results.extend([
             {
                 "Title": "List Models",
-                "SubTitle": "Type 'ortr models' to see available models",
-                "IcoPath": "Images/app.png"
+                "SubTitle": "Type 'ai models' to see available models",
+                "IcoPath": "Images\\app.png"
             },
             {
                 "Title": "Set Model",
-                "SubTitle": "Use 'ortr setmodel MODEL_ID' to set your preferred model",
-                "IcoPath": "Images/app.png"
+                "SubTitle": "Use 'ai setmodel MODEL_ID' to set your preferred model",
+                "IcoPath": "Images\\app.png"
             }
         ])
         
@@ -158,15 +158,15 @@ class OpenRouterPlugin(FlowLauncher):
             return [{
                 "Title": "No models found",
                 "SubTitle": "Failed to retrieve models from OpenRouter",
-                "IcoPath": "Images/app.png"
+                "IcoPath": "Images\\app.png"
             }]
         
         results = []
         for model in self.models:
             results.append({
                 "Title": model,
-                "SubTitle": f"Set as default model by typing 'ortr setmodel {model}'",
-                "IcoPath": "Images/app.png",
+                "SubTitle": f"Set as default model by typing 'ai setmodel {model}'",
+                "IcoPath": "Images\\app.png",
                 "JsonRPCAction": {
                     "method": "set_model",
                     "parameters": [model]
@@ -184,7 +184,7 @@ class OpenRouterPlugin(FlowLauncher):
                     "Authorization": f"Bearer {self.api_key}",
                     "Content-Type": "application/json",
                     "HTTP-Referer": "flow-launcher-plugin",
-                    "X-Title": "OpenRouter Flow Launcher Plugin"
+                    "X-Title": "AI Assistant Flow Launcher Plugin"
                 },
                 json={
                     "model": self.default_model,
@@ -204,7 +204,7 @@ class OpenRouterPlugin(FlowLauncher):
                 return {
                     "Title": "Answer copied to clipboard",
                     "SubTitle": answer[:100] + "..." if len(answer) > 100 else answer,
-                    "IcoPath": "Images/app.png"
+                    "IcoPath": "Images\\app.png"
                 }
             else:
                 error_data = response.json().get("error", {})
@@ -212,13 +212,13 @@ class OpenRouterPlugin(FlowLauncher):
                 return {
                     "Title": f"Error: {response.status_code}",
                     "SubTitle": error_message,
-                    "IcoPath": "Images/app.png"
+                    "IcoPath": "Images\\app.png"
                 }
         except Exception as e:
             return {
                 "Title": "Error",
                 "SubTitle": str(e),
-                "IcoPath": "Images/app.png"
+                "IcoPath": "Images\\app.png"
             }
     
     def set_model(self, model):
@@ -227,7 +227,7 @@ class OpenRouterPlugin(FlowLauncher):
         return {
             "Title": f"Model set to {model}",
             "SubTitle": "This model will be used for your queries",
-            "IcoPath": "Images/app.png"
+            "IcoPath": "Images\\app.png"
         }
     
     def _copy_to_clipboard(self, text):
@@ -245,7 +245,7 @@ class OpenRouterPlugin(FlowLauncher):
             {
                 "Title": "Visit OpenRouter website",
                 "SubTitle": "Open OpenRouter in your browser",
-                "IcoPath": "Images/app.png",
+                "IcoPath": "Images\\app.png",
                 "JsonRPCAction": {
                     "method": "open_url",
                     "parameters": ["https://openrouter.ai"]
@@ -258,4 +258,4 @@ class OpenRouterPlugin(FlowLauncher):
         webbrowser.open(url)
 
 if __name__ == "__main__":
-    OpenRouterPlugin()
+    AIPlugin()

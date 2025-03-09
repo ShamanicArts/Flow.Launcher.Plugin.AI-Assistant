@@ -1,12 +1,12 @@
 {
-    "ID": "flow.launcher.openrouter",
-    "ActionKeyword": "ortr",
-    "Name": "OpenRouter AI",
+    "ID": "flow.launcher.plugin.ai",
+    "ActionKeyword": "ai",
+    "Name": "AI",
     "Description": "Query OpenRouter AI models directly from Flow Launcher",
-    "Author": "Your Name",
-    "Version": "1.0.0",
+    "Author": "Lucas Shamanic",
+    "Version": "0.0.1",
     "Language": "python",
-    "Website": "https://github.com/yourusername/flow.launcher.openrouter",
-    "IcoPath": "Images/app.png",
+    "Website": "https://github.com/yourusername/Flow.Launcher.Plugin.ai",
+    "IcoPath": "Images\\app.png",
     "ExecuteFileName": "main.py"
   }
