@@ -1,5 +1,11 @@
 body:
 
+    - type: passwordBox
+      attributes:
+          name: api_key
+          label: "OpenRouter API Key:"
+          description: "API key for OpenRouter - it is recommended to set your OPENROUTER_API_KEY environment variable key instead"
+
     - type: input
       attributes:
           name: default_model
