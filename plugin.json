@@ -6,7 +6,9 @@
     "Author": "Lucas Shamanic",
     "Version": "0.0.1",
     "Language": "python",
-    "Website": "https://github.com/yourusername/Flow.Launcher.Plugin.ai",
+    "Website": "https://github.com/shamanicvocalarts/Flow.Launcher.Plugin.ai",
     "IcoPath": "Images\\app.png",
-    "ExecuteFileName": "main.py"
+    "ExecuteFileName": "main.py",
+    "HasSettings": true
+
   }

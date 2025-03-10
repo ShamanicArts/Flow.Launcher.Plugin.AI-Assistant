@@ -14,44 +14,60 @@ from flowlauncher import FlowLauncher
 
 class AIPlugin(FlowLauncher):
     def __init__(self):
+        # Initialize variables before calling super().__init__()
+        self.api_key = ""
+        self.default_model = "deepseek/deepseek-chat:free"
+        self.models = []
+        self.settings = {}
+        
+        # Now call the parent's __init__ which might call query()
         super().__init__()
-        self.api_key = self._load_api_key()
-        self.default_model = "openai/gpt-3.5-turbo"
+        
+        # Load settings after initialization
+        self._load_settings()
         self.models = self._load_models()
 
-    def _load_api_key(self):
-        """Load API key from settings file."""
+    def _load_settings(self):
+        """Load settings from settings.json file."""
         settings_path = os.path.join(os.path.dirname(__file__), "settings.json")
         try:
             if os.path.exists(settings_path):
                 with open(settings_path, "r") as f:
-                    settings = json.load(f)
-                    return settings.get("api_key", "")
-            return ""
-        except Exception:
-            return ""
+                    self.settings = json.load(f)
+                    self.api_key = self.settings.get("api_key", "")
+                    self.default_model = self.settings.get("default_model", "deepseek/deepseek-chat:free")
+            else:
+                # Create default settings
+                self.settings = {
+                    "api_key": "",
+                    "default_model": "deepseek/deepseek-chat:free"
+                }
+                self._save_settings()
+        except Exception as e:
+            print(f"Error loading settings: {e}")
 
-    def _save_api_key(self, api_key):
-        """Save API key to settings file."""
+    def _save_settings(self):
+        """Save settings to settings.json file."""
         settings_path = os.path.join(os.path.dirname(__file__), "settings.json")
         try:
-            settings = {}
-            if os.path.exists(settings_path):
-                with open(settings_path, "r") as f:
-                    settings = json.load(f)
-            
-            settings["api_key"] = api_key
+            # Update settings dict with current values
+            self.settings["api_key"] = self.api_key
+            self.settings["default_model"] = self.default_model
             
             with open(settings_path, "w") as f:
-                json.dump(settings, f)
+                json.dump(self.settings, f, indent=4)
             
             return True
-        except Exception:
+        except Exception as e:
+            print(f"Error saving settings: {e}")
             return False
 
     def _load_models(self):
         """Load available models from OpenRouter."""
         try:
+            if not self.api_key:
+                return []
+                
             response = requests.get("https://openrouter.ai/api/v1/models")
             if response.status_code == 200:
                 data = response.json()
@@ -65,54 +81,38 @@ class AIPlugin(FlowLauncher):
         if not query:
             return self._welcome_results()
         
-        # Check if it's a command
-        if query.startswith("setkey "):
-            _, api_key = query.split("setkey ", 1)
-            success = self._save_api_key(api_key)
-            if success:
-                self.api_key = api_key
-                return [{
-                    "Title": "API Key saved successfully",
-                    "SubTitle": "Your OpenRouter API key has been saved",
-                    "IcoPath": "Images\\app.png"
-                }]
-            else:
-                return [{
-                    "Title": "Failed to save API key",
-                    "SubTitle": "There was an error saving your API key",
-                    "IcoPath": "Images\\app.png"
-                }]
+        # Filter queries containing the '||' delimiter
+        if '||' in query:
+            query = query.split('||', 1)[0].strip()
+            return self._ask_ai(query)
         
-        if query.startswith("setmodel "):
-            _, model = query.split("setmodel ", 1)
-            if model in self.models:
-                self.default_model = model
-                return [{
-                    "Title": f"Model set to {model}",
-                    "SubTitle": "This model will be used for your queries",
-                    "IcoPath": "Images\\app.png"
-                }]
-            else:
-                return [{
-                    "Title": "Invalid model",
-                    "SubTitle": "The specified model is not available",
-                    "IcoPath": "Images\\app.png"
-                }]
-        
-        if query.startswith("models"):
-            return self._list_models()
-        
-        # If not a command, treat as a question for the AI
+        # Show thinking indicator when user is typing
+        return [{
+            "Title": f"Ask AI: {query}",
+            "SubTitle": f"Press Enter or add '||' to send to {self.default_model}",
+            "IcoPath": "Images\\app.png",
+            "JsonRPCAction": {
+                "method": "ask_openrouter",
+                "parameters": [query]
+            }
+        }]
+    
+    def _ask_ai(self, query):
+        """Format a query for asking the AI."""
         if not self.api_key:
             return [{
                 "Title": "API Key not set",
-                "SubTitle": "Use 'ai setkey YOUR_API_KEY' to set your OpenRouter API key",
-                "IcoPath": "Images\\app.png"
+                "SubTitle": "Configure your OpenRouter API key in Flow Launcher settings",
+                "IcoPath": "Images\\app.png",
+                "JsonRPCAction": {
+                    "method": "open_plugin_settings",
+                    "parameters": []
+                }
             }]
-        
+            
         return [{
-            "Title": f"Ask: {query}",
-            "SubTitle": f"Press Enter to ask using {self.default_model}",
+            "Title": f"Asking: {query}",
+            "SubTitle": f"Sending to {self.default_model}...",
             "IcoPath": "Images\\app.png",
             "JsonRPCAction": {
                 "method": "ask_openrouter",
@@ -125,53 +125,31 @@ class AIPlugin(FlowLauncher):
         results = [
             {
                 "Title": "AI Assistant",
-                "SubTitle": "Type a question to ask the AI",
+                "SubTitle": "Type a question followed by || to ask the AI",
                 "IcoPath": "Images\\app.png"
             }
         ]
         
         if not self.api_key:
             results.append({
-                "Title": "Set API Key",
-                "SubTitle": "Use 'ai setkey YOUR_API_KEY' to set your OpenRouter API key",
-                "IcoPath": "Images\\app.png"
-            })
-        
-        results.extend([
-            {
-                "Title": "List Models",
-                "SubTitle": "Type 'ai models' to see available models",
-                "IcoPath": "Images\\app.png"
-            },
-            {
-                "Title": "Set Model",
-                "SubTitle": "Use 'ai setmodel MODEL_ID' to set your preferred model",
-                "IcoPath": "Images\\app.png"
-            }
-        ])
-        
-        return results
-    
-    def _list_models(self):
-        """List available models from OpenRouter."""
-        if not self.models:
-            return [{
-                "Title": "No models found",
-                "SubTitle": "Failed to retrieve models from OpenRouter",
-                "IcoPath": "Images\\app.png"
-            }]
-        
-        results = []
-        for model in self.models:
-            results.append({
-                "Title": model,
-                "SubTitle": f"Set as default model by typing 'ai setmodel {model}'",
+                "Title": "Configure API Key",
+                "SubTitle": "Configure your OpenRouter API key in Flow Launcher settings",
                 "IcoPath": "Images\\app.png",
                 "JsonRPCAction": {
-                    "method": "set_model",
-                    "parameters": [model]
+                    "method": "open_plugin_settings",
+                    "parameters": []
                 }
             })
+        
+        results.append({
+            "Title": "Visit OpenRouter",
+            "SubTitle": "Open OpenRouter website to get an API key",
+            "IcoPath": "Images\\app.png",
+            "JsonRPCAction": {
+                "method": "open_url",
+                "parameters": ["https://openrouter.ai/keys"]
+            }
+        })
         
         return results
     
@@ -221,12 +199,11 @@ class AIPlugin(FlowLauncher):
                 "IcoPath": "Images\\app.png"
             }
     
-    def set_model(self, model):
-        """Set the default model."""
-        self.default_model = model
+    def open_plugin_settings(self):
+        """Open the Flow Launcher plugin settings for this plugin."""
         return {
-            "Title": f"Model set to {model}",
-            "SubTitle": "This model will be used for your queries",
+            "Title": "Opening plugin settings",
+            "SubTitle": "Configure your API key and model preferences",
             "IcoPath": "Images\\app.png"
         }
     
@@ -243,8 +220,17 @@ class AIPlugin(FlowLauncher):
         """Context menu for results."""
         return [
             {
-                "Title": "Visit OpenRouter website",
-                "SubTitle": "Open OpenRouter in your browser",
+                "Title": "Configure Settings",
+                "SubTitle": "Open plugin settings",
+                "IcoPath": "Images\\app.png",
+                "JsonRPCAction": {
+                    "method": "open_plugin_settings",
+                    "parameters": []
+                }
+            },
+            {
+                "Title": "Visit OpenRouter",
+                "SubTitle": "Open OpenRouter website",
                 "IcoPath": "Images\\app.png",
                 "JsonRPCAction": {
                     "method": "open_url",
@@ -256,6 +242,41 @@ class AIPlugin(FlowLauncher):
     def open_url(self, url):
         """Open a URL in the default browser."""
         webbrowser.open(url)
+
+    # Plugin settings interface
+    def get_plugin_settings_json(self):
+        return {
+            "api_key": {
+                "displayName": "OpenRouter API Key",
+                "description": "Your API key from openrouter.ai",
+                "value": self.api_key,
+                "type": "input",
+                "inputType": "password"
+            },
+            "default_model": {
+                "displayName": "Default AI Model",
+                "description": "The AI model to use (e.g., deepseek/deepseek-chat:free)",
+                "value": self.default_model,
+                "type": "input"
+            }
+        }
+
+    def set_plugin_settings(self, settings_json):
+        try:
+            settings = json.loads(settings_json)
+            if "api_key" in settings:
+                self.api_key = settings["api_key"]
+            if "default_model" in settings:
+                self.default_model = settings["default_model"]
+            self._save_settings()
+            
+            # Reload models if API key is set
+            if self.api_key:
+                self.models = self._load_models()
+            
+            return {"success": True}
+        except Exception as e:
+            return {"success": False, "message": str(e)}
 
 if __name__ == "__main__":
     AIPlugin()
