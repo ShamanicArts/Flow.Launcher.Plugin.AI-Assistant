@@ -1,5 +1,5 @@
 {
-    "ID": "Flow.Launcher.Plugin.ai",
+    "ID": "8226842d-f2e2-4159-940c-966666ce7b44",
     "ActionKeyword": "ai",
     "Name": "AI",
     "Description": "Query OpenRouter AI models directly from Flow Launcher",
