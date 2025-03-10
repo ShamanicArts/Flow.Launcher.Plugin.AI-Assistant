@@ -1,0 +1,15 @@
+body:
+
+    - type: input
+      attributes:
+          name: default_model
+          label: "Default AI Model:"
+          defaultValue: "deepseek/deepseek-chat:free"
+          description: "Select the AI model to use for queries"
+
+    - type: input
+      attributes:
+          name: delimiter
+          label: "Prompt Delimiter:"
+          description: "Symbol that indicates when to send the prompt"
+          defaultValue: "||"
