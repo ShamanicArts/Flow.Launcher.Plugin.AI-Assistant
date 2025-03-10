@@ -4,10 +4,10 @@
     "Name": "AI",
     "Description": "Query OpenRouter AI models directly from Flow Launcher",
     "Author": "Lucas Shamanic",
-    "Version": "0.0.1",
+    "Version": "0.0.2",
     "Language": "python",
     "Website": "https://github.com/shamanicvocalarts/Flow.Launcher.Plugin.ai",
-    "IcoPath": "Images\\app.png",
+    "IcoPath": "https://cdn.jsdelivr.net/gh/shamanicvocalarts/Flow.Launcher.Plugin.ai@main/images/app.png",
     "ExecuteFileName": "main.py"
 
   }
