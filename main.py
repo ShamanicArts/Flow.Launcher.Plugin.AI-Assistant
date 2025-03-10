@@ -19,8 +19,20 @@ from pyflowlauncher.settings import settings
 DEFAULT_MODEL = "deepseek/deepseek-chat:free"
 DEFAULT_DELIMITER = "||"
 
+# Flag to force settings API key test - set to True when testing
+FORCE_SETTINGS_API_KEY = False
+
 # Cache for settings to handle inconsistent settings() behavior
 _settings_cache = {}
+
+def get_env_api_key():
+    """
+    Get the API key from environment variable, respecting the test flag.
+    When FORCE_SETTINGS_API_KEY is True, this will return None as if no env var exists.
+    """
+    if FORCE_SETTINGS_API_KEY:
+        return None
+    return os.environ.get("OPENROUTER_API_KEY")
 
 def get_settings(key=None, default=None):
     """
@@ -37,7 +49,7 @@ def get_settings(key=None, default=None):
     
     # Special case for API key - prioritize environment variable
     if key == "api_key":
-        env_api_key = os.environ.get("OPENROUTER_API_KEY")
+        env_api_key = get_env_api_key()
         if env_api_key:
             return env_api_key
     
