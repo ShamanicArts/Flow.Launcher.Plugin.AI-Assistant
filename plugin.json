@@ -7,7 +7,7 @@
   "Version": "0.0.2",
   "Language": "python",
   "Website": "https://github.com/shamanicvocalarts/Flow.Launcher.Plugin.AI-Assistant",
-  "IcoPath": "https://cdn.jsdelivr.net/gh/shamanicvocalarts/Flow.Launcher.Plugin.AI-Assistant@main/images/app.png",
+  "IcoPath": "images/app.png",
   "ExecuteFileName": "main.py"
 
 }
