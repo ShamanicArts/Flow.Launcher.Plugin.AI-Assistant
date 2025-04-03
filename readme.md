@@ -46,10 +46,19 @@ The plugin supports the following settings:
    ai What is quantum computing? ||
    ```
 
+![Entering a query in Flow Launcher](images/ai-devito-flow-query.png)
+
 ### Receiving Results
 2. The plugin will display the AI's response with two options:
    - **AI Response**: Click to copy the full response to clipboard
    - **Open in Notepad**: Click to open the response in Notepad for viewing or editing
+
+![Receiving AI results in Flow Launcher](images/ai-devito-flow-result.png)
+
+### Viewing the Result in Notepad
+ 3. If you choose to open the response in Notepad:
+    
+    ![Result opened in Notepad](images/ai-devito-text-result.png)
 
 ### Example Queries
 - `ai Explain the theory of relativity in simple terms ||`
