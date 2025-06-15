@@ -1,4 +1,4 @@
-# AI Assistant
+# Flow.Launcher.Plugin.ai
 A Flow Launcher plugin that connects to OpenRouter AI models, allowing you to quickly query AI models directly from your launcher.
 
 ## Features
