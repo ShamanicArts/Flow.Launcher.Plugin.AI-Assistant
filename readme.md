@@ -24,7 +24,7 @@ A Flow Launcher plugin that connects to OpenRouter AI models, allowing you to qu
 4. Click "Install"
 
 ### Method 3: Manual Installation
-1. Download the latest release from the [Releases page](https://github.com/yourusername/Flow.Launcher.Plugin.ai/releases)
+1. Download the latest release from the [Releases page](https://github.com/ShamanicArts/Flow.Launcher.Plugin.ai/releases)
 2. Extract the zip file to `%APPDATA%\FlowLauncher\Plugins`
 3. Restart Flow Launcher
 
