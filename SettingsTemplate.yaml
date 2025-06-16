@@ -1,21 +1,38 @@
 body:
+  - type: passwordBox
+    attributes:
+      name: api_key
+      label: "OpenRouter API Key:"
+      description: "API key for OpenRouter - it is recommended to set your OPENROUTER_API_KEY environment variable key instead"
 
-    - type: passwordBox
-      attributes:
-          name: api_key
-          label: "OpenRouter API Key:"
-          description: "API key for OpenRouter - it is recommended to set your OPENROUTER_API_KEY environment variable key instead"
+  - type: input
+    attributes:
+      name: default_model
+      label: "Default AI Model:"
+      description: "Select the AI model to use for queries"
+      defaultValue: "deepseek/deepseek-chat:free"
 
-    - type: input
-      attributes:
-          name: default_model
-          label: "Default AI Model:"
-          defaultValue: "deepseek/deepseek-chat:free"
-          description: "Select the AI model to use for queries"
+  - type: inputWithFileBtn
+    attributes:
+      name: editor_path
+      label: "Preferred Text Editor:"
+      description: "Path to your editor's executable. Use the 'Browse' button to select it."
+      defaultValue: "notepad.exe"
 
-    - type: input
-      attributes:
-          name: delimiter
-          label: "Prompt Delimiter:"
-          description: "Symbol that indicates when to send the prompt"
-          defaultValue: "||"
+  - type: input
+    attributes:
+      name: delimiter
+      label: "Prompt Delimiter:"
+      description: "Symbol that indicates when to send the prompt"
+      defaultValue: "||"
+
+  - type: dropdown
+    attributes:
+      name: system_prompt_file
+      label: "System Prompt:"
+      description: "Select a system prompt file from the 'prompts' folder."
+      defaultValue: "default.txt"
+      options:
+        - default.txt
+        - custom_prompt_1.txt
+        - custom_prompt_2.txt
